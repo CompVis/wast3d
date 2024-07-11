@@ -1,4 +1,5 @@
-# [WaST-3D Project Page](https://depthfm.github.io/)
+# [WaST-3D Project Page](https://compvis.github.io/wast3d/)  
+
 
 # License
 <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a><br />
