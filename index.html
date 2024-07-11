@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="WaSt-3D: Wasserstein-2 Distance for 001 Scene-to-Scene Stylization on 3D Gaussians">
+  <meta name="keywords" content="style transfer, EMD, 3D, scene, 3DGS">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:image:src" content="http://depthfm.github.io/images/radio.png">
+  <meta name="twitter:title" content="WaSt-3D">
+  <meta name="twitter:description" content="WaSt-3D: Wasserstein-2 Distance for 001 Scene-to-Scene Stylization on 3D Gaussians">
+  <meta name="twitter:creator" content="Dima Kotovenko">
+
+  <title>WaSt-3D: Wasserstein-2 Distance for Scene-to-Scene Stylization on 3D Gaussians</title>
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-1FWSVCGZTG"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'G-1FWSVCGZTG');
+  </script>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./css/bulma.min.css">
+  <link rel="stylesheet" href="./css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./css/twentytwenty.css">
+  <link rel="stylesheet" href="./css/index.css">
+  <link rel="icon" href="./images/radio.png">
+
+  <script src="./js/jquery-3.2.1.min.js"></script>
+  <script src="./js/jquery.event.move.js"></script>
+  <script src="./js/jquery.twentytwenty.js"></script>
+  <script src="./js/bulma-carousel.min.js"></script>
+  <script src="./js/bulma-slider.min.js"></script>
+  <script src="./js/fontawesome.all.min.js"></script>
+
+  <!--MathJax-->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      },
+      svg: {
+        fontCache: 'global'
+      }
+    };
+  </script>
+  <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">WaSt-3D: Wasserstein-2 Distance for Scene-to-Scene Stylization on 3D Gaussians</h1>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">Dima Kotovenko<sup>1</sup>,</span>
+            <span class="author-block">Olga Grebenkova<sup>1</sup>,</span>
+            <span class="author-block">Nikolaos Sarafianos<sup>2</sup>,</span>
+            <span class="author-block">Avinash Paliwal<sup>3</sup>,</span>
+            <span class="author-block">Pingchuan Ma<sup>1</sup>,</span>
+            <span class="author-block">Omid Poursaeed<sup>2</sup>,</span>
+            <span class="author-block">Sreyas Mohan<sup>2</sup>,</span>
+            <span class="author-block">Yuchen Fan<sup>2</sup>,</span>
+            <span class="author-block">Yilei Li<sup>2</sup>,</span>
+            <span class="author-block">Rakesh Ranjan<sup>2</sup>,</span>
+            <span class="author-block">Björn Ommer<sup>1</sup></span>
+          </div>
+          <br>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block"><sup>1</sup>CompVis @ LMU Munich, MCML</span><br>
+            <span class="author-block"><sup>2</sup>Meta Reality Labs</span><br>
+            <span class="author-block"><sup>3</sup>Texas A&M University</span>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <span class="link-block">
+                <a href="https://arxiv.org/" target="_blank" rel="noopener noreferrer"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf" style="color: orangered"></i>
+                  </span>
+                  <span>Paper</span>
+                </a>
+              </span>
+              <!-- Code Link. -->
+              <span class="link-block">
+                <a href="https://github.com/facebookresearch/GST_colorbook" target="_blank" rel="noopener noreferrer"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code</span>
+                </a>
+              </span>
+              <!-- Colab Link. -->
+              <!-- <span class="link-block">
+                <a href="https://colab.research.google.com/drive/xxx-u?usp=sharing" target="_blank" rel="noopener noreferrer"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                    <img src="images/colab.svg">
+                  </span>
+                  <span>&nbsp;Google Colab</span>
+                </a>
+              </span> -->
+              <!-- Hugging Face. -->
+              <!-- <span class="link-block">
+                <a href="https://huggingface.co/spaces/xxx" target="_blank" rel="noopener noreferrer"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      &#129303;
+                  </span>
+                  <span>Hugging Face Space</span>
+                </a>
+              </span> -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <img id="teaser" width="100%" src="./images/title_page-2.jpg" alt="Teaser image demonstrating DpethFM depth estimation."/>
+      <!-- <h2 class="subtitle has-text-centered">
+        <span class="methodname">Marigold</span> is the new state-of-the-art depth estimator for images in the wild.
+      </h2> -->
+    </div>
+  </div>
+</section>
+
+
+<section class="section pt-0">
+  <div class="container is-max-desktop">
+    <!-- Abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            While style transfer techniques have been well-developed for 2D image stylization, the extension of these methods
+            to 3D scenes remains relatively unexplored. Existing approaches demonstrate proficiency in transferring colors and
+            textures but often struggle with replicating the geometry of the scenes. In our work, we leverage an explicit Gaussian
+            Scale (GS) representation and directly match the distributions of Gaussians between style and content scenes using the
+            Earth Mover's Distance (EMD). By employing the entropy-regularized Wasserstein-2 distance, we ensure that the
+            transformation maintains spatial smoothness. Additionally, we decompose the scene stylization problem into smaller
+            chunks to enhance efficiency. This paradigm shift reframes stylization from a pure generative process driven by
+            latent space losses to an explicit matching of distributions between two Gaussian representations. Our method achieves
+            high-resolution 3D stylization by faithfully transferring details from 3D style scenes onto the content scene. Furthermore,
+            WaSt-3D consistently delivers results across diverse content and style scenes without necessitating any training, as it relies
+            solely on optimization-based techniques.
+          </p>
+
+<!--          <p>-->
+<!--            The gallery below presents images sourced from the internet, accompanied by a comparison between our DepthFM, ZoeDepth, and Marigold. -->
+<!--            Utilize the slider and gestures to reveal details on both sides. Note that our depth maps in the first two rows are generated with 10 inference steps, -->
+<!--            while the last row showcases our results with <b>one single inference step</b> compared to Marigold with <b> two inference steps</b>. -->
+<!--            We achieve significantly faster inference speed with minimal performance sacrifices.-->
+<!--          </p>-->
+        </div>
+      </div>
+    </div>
+    <!--/ Abstract. -->
+  </div>
+</section>
+
+
+<!--<section class="hero is-light is-small">-->
+<!--  <div class="hero-body">-->
+<!--    <div class="container">-->
+<!--      <div id="results-carousel-horizontal" class="carousel results-carousel">-->
+
+<!--        <div class="twoitem">-->
+<!--          <div class="twentytwenty-container twentytwenty-container-top">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/archi6-unsplash_image.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/archi6-unsplash_depthfm_10.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div class="twentytwenty-container twentytwenty-container-mid">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/archi6-unsplash_zoe.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/archi6-unsplash_depthfm_10.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div class="twentytwenty-container twentytwenty-container-bottom">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/archi6-unsplash_marigold_2.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/archi6-unsplash_depthfm_1.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+
+<!--        <div class="twoitem">-->
+<!--          <div class="twentytwenty-container twentytwenty-container-top">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/old-unsplash_image.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/old-unsplash_depthfm_10.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div class="twentytwenty-container twentytwenty-container-mid">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/old-unsplash_zoe.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/old-unsplash_depthfm_10.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div class="twentytwenty-container twentytwenty-container-bottom">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/old-unsplash_marigold_2.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/old-unsplash_depthfm_1.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+
+<!--        <div class="twoitem">-->
+<!--          <div class="twentytwenty-container twentytwenty-container-top">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/coffee-machine-unsplash_image.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/coffee-machine-unsplash_depthfm_10.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div class="twentytwenty-container twentytwenty-container-mid">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/coffee-machine-unsplash_zoe.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/coffee-machine-unsplash_depthfm_10.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div class="twentytwenty-container twentytwenty-container-bottom">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/coffee-machine-unsplash_marigold_2.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/coffee-machine-unsplash_depthfm_1.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+
+<!--        <div class="twoitem">-->
+<!--          <div class="twentytwenty-container twentytwenty-container-top">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/train2-unsplash_image.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/train2-unsplash_depthfm_10.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div class="twentytwenty-container twentytwenty-container-mid">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/train2-unsplash_zoe.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/train2-unsplash_depthfm_10.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div class="twentytwenty-container twentytwenty-container-bottom">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/train2-unsplash_marigold_2.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/train2-unsplash_depthfm_1.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+
+<!--        <div class="twoitem">-->
+<!--          <div class="twentytwenty-container twentytwenty-container-top">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/rocket1-unsplash_image.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/rocket1-unsplash_depthfm_10.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div class="twentytwenty-container twentytwenty-container-mid">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/rocket1-unsplash_zoe.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/rocket1-unsplash_depthfm_10.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div class="twentytwenty-container twentytwenty-container-bottom">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/rocket1-unsplash_marigold_2.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/rocket1-unsplash_depthfm_1.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+
+<!--        <div class="twoitem">-->
+<!--          <div class="twentytwenty-container twentytwenty-container-top">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/factory-unsplash_image.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/factory-unsplash_depthfm_10.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div class="twentytwenty-container twentytwenty-container-mid">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/factory-unsplash_zoe.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/factory-unsplash_depthfm_10.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div class="twentytwenty-container twentytwenty-container-bottom">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/factory-unsplash_marigold_2.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/factory-unsplash_depthfm_1.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+
+<!--        <div class="twoitem">-->
+<!--          <div class="twentytwenty-container twentytwenty-container-top">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/laterns_image.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/laterns_depthfm_10.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div class="twentytwenty-container twentytwenty-container-mid">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/laterns_zoe.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/laterns_depthfm_10.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div class="twentytwenty-container twentytwenty-container-bottom">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/laterns_marigold_2.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/laterns_depthfm_1.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+
+<!--        <div class="twoitem">-->
+<!--          <div class="twentytwenty-container twentytwenty-container-top">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/machine1-unsplash_image.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/machine1-unsplash_depthfm_10.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div class="twentytwenty-container twentytwenty-container-mid">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/machine1-unsplash_zoe.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/machine1-unsplash_depthfm_10.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div class="twentytwenty-container twentytwenty-container-bottom">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/machine1-unsplash_marigold_2.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/machine1-unsplash_depthfm_1.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+
+<!--        <div class="twoitem">-->
+<!--          <div class="twentytwenty-container twentytwenty-container-top">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/machine2-unsplash_image.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/machine2-unsplash_depthfm_10.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div class="twentytwenty-container twentytwenty-container-mid">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/machine2-unsplash_zoe.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/machine2-unsplash_depthfm_10.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div class="twentytwenty-container twentytwenty-container-bottom">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/machine2-unsplash_marigold_2.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/machine2-unsplash_depthfm_1.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+
+<!--        <div class="twoitem">-->
+<!--          <div class="twentytwenty-container twentytwenty-container-top">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/museum1-unsplash_image.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/museum1-unsplash_depthfm_10.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div class="twentytwenty-container twentytwenty-container-mid">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/museum1-unsplash_zoe.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/museum1-unsplash_depthfm_10.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div class="twentytwenty-container twentytwenty-container-bottom">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/museum1-unsplash_marigold_2.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/museum1-unsplash_depthfm_1.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+
+<!--        <div class="twoitem">-->
+<!--          <div class="twentytwenty-container twentytwenty-container-top">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/ubahn-unsplash_image.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/ubahn-unsplash_depthfm_10.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div class="twentytwenty-container twentytwenty-container-mid">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/ubahn-unsplash_zoe.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/ubahn-unsplash_depthfm_10.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div class="twentytwenty-container twentytwenty-container-bottom">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/ubahn-unsplash_marigold_2.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/horizontal/ubahn-unsplash_depthfm_1.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--        -->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</section>-->
+
+<!--<section class="hero is-light is-small">-->
+<!--  <div class="hero-body">-->
+<!--    <div class="container">-->
+<!--      <div id="results-carousel-vertical" class="carousel results-carousel">-->
+
+<!--        <div class="twoitem">-->
+<!--          <div class="twentytwenty-container twentytwenty-container-top">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/train-unsplash_image.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/train-unsplash_depthfm_10.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div class="twentytwenty-container twentytwenty-container-mid">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/train-unsplash_zoe.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/train-unsplash_depthfm_10.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div class="twentytwenty-container twentytwenty-container-bottom">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/train-unsplash_marigold_2.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/train-unsplash_depthfm_1.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+
+<!--        <div class="twoitem">-->
+<!--          <div class="twentytwenty-container twentytwenty-container-top">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/table_image.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/table_depthfm_10.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div class="twentytwenty-container twentytwenty-container-mid">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/table_zoe.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/table_depthfm_10.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div class="twentytwenty-container twentytwenty-container-bottom">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/table_marigold_2.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/table_depthfm_1.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+
+<!--        <div class="twoitem">-->
+<!--          <div class="twentytwenty-container twentytwenty-container-top">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/archi2-unsplash_image.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/archi2-unsplash_depthfm_10.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div class="twentytwenty-container twentytwenty-container-mid">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/archi2-unsplash_zoe.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/archi2-unsplash_depthfm_10.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div class="twentytwenty-container twentytwenty-container-bottom">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/archi2-unsplash_marigold_2.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/archi2-unsplash_depthfm_1.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+
+<!--        <div class="twoitem">-->
+<!--          <div class="twentytwenty-container twentytwenty-container-top">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/pillars_image.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/pillars_depthfm_10.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div class="twentytwenty-container twentytwenty-container-mid">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/pillars_zoe.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/pillars_depthfm_10.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div class="twentytwenty-container twentytwenty-container-bottom">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/pillars_marigold_2.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/pillars_depthfm_1.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+
+<!--        <div class="twoitem">-->
+<!--          <div class="twentytwenty-container twentytwenty-container-top">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/archi1-unsplash_image.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/archi1-unsplash_depthfm_10.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div class="twentytwenty-container twentytwenty-container-mid">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/archi1-unsplash_zoe.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/archi1-unsplash_depthfm_10.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div class="twentytwenty-container twentytwenty-container-bottom">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/archi1-unsplash_marigold_2.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/archi1-unsplash_depthfm_1.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+
+<!--        <div class="twoitem">-->
+<!--          <div class="twentytwenty-container twentytwenty-container-top">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/archi4-unsplash_image.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/archi4-unsplash_depthfm_10.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div class="twentytwenty-container twentytwenty-container-mid">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/archi4-unsplash_zoe.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/archi4-unsplash_depthfm_10.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div class="twentytwenty-container twentytwenty-container-bottom">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/archi4-unsplash_marigold_2.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/archi4-unsplash_depthfm_1.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+
+<!--        <div class="twoitem">-->
+<!--          <div class="twentytwenty-container twentytwenty-container-top">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/camera-unsplash_image.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/camera-unsplash_depthfm_10.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div class="twentytwenty-container twentytwenty-container-mid">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/camera-unsplash_zoe.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/camera-unsplash_depthfm_10.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div class="twentytwenty-container twentytwenty-container-bottom">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/camera-unsplash_marigold_2.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/camera-unsplash_depthfm_1.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+
+<!--        <div class="twoitem">-->
+<!--          <div class="twentytwenty-container twentytwenty-container-top">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/coffee-unsplash_image.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/coffee-unsplash_depthfm_10.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div class="twentytwenty-container twentytwenty-container-mid">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/coffee-unsplash_zoe.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/coffee-unsplash_depthfm_10.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div class="twentytwenty-container twentytwenty-container-bottom">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/coffee-unsplash_marigold_2.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/coffee-unsplash_depthfm_1.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+
+<!--        <div class="twoitem">-->
+<!--          <div class="twentytwenty-container twentytwenty-container-top">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/factory2-unsplash_image.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/factory2-unsplash_depthfm_10.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div class="twentytwenty-container twentytwenty-container-mid">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/factory2-unsplash_zoe.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/factory2-unsplash_depthfm_10.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div class="twentytwenty-container twentytwenty-container-bottom">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/factory2-unsplash_marigold_2.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/factory2-unsplash_depthfm_1.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+
+<!--        <div class="twoitem">-->
+<!--          <div class="twentytwenty-container twentytwenty-container-top">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/plant_image.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/plant_depthfm_10.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div class="twentytwenty-container twentytwenty-container-mid">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/plant_zoe.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/plant_depthfm_10.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div class="twentytwenty-container twentytwenty-container-bottom">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/plant_marigold_2.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/plant_depthfm_1.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+
+<!--        <div class="twoitem">-->
+<!--          <div class="twentytwenty-container twentytwenty-container-top">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/rocket2-unsplash_image.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/rocket2-unsplash_depthfm_10.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div class="twentytwenty-container twentytwenty-container-mid">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/rocket2-unsplash_zoe.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/rocket2-unsplash_depthfm_10.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div class="twentytwenty-container twentytwenty-container-bottom">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/rocket2-unsplash_marigold_2.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/rocket2-unsplash_depthfm_1.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+
+<!--        <div class="twoitem">-->
+<!--          <div class="twentytwenty-container twentytwenty-container-top">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/trecime_image.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/trecime_depthfm_10.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div class="twentytwenty-container twentytwenty-container-mid">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/trecime_zoe.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/trecime_depthfm_10.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div class="twentytwenty-container twentytwenty-container-bottom">-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/trecime_marigold_2.jpg">-->
+<!--            </div>-->
+<!--            <div class="cmpcontent">-->
+<!--              <img src="./images/resized_results/vertical/trecime_depthfm_1.jpg">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--        -->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</section>-->
+
+<!--<script>-->
+<!--  $(window).on('load', function() {-->
+<!--    bulmaCarousel.attach('#results-carousel-horizontal', {-->
+<!--      slidesToScroll: 1,-->
+<!--      slidesToShow: 3,-->
+<!--      loop: true,-->
+<!--      autoplay: true,-->
+<!--    });-->
+
+<!--    bulmaCarousel.attach('#results-carousel-vertical', {-->
+<!--      slidesToScroll: 1,-->
+<!--      slidesToShow: 5,-->
+<!--      loop: true,-->
+<!--      autoplay: true,-->
+<!--    });-->
+
+<!--    $(".twentytwenty-container-top").twentytwenty({-->
+<!--      before_label: 'Input',-->
+<!--      after_label: 'Ours',-->
+<!--      default_offset_pct: 0.75,-->
+<!--    });-->
+<!--    $(".twentytwenty-container-mid").twentytwenty({-->
+<!--      before_label: 'ZoeDepth',-->
+<!--      after_label: 'Ours',-->
+<!--      default_offset_pct: 0.35,-->
+<!--    });-->
+<!--    $(".twentytwenty-container-bottom").twentytwenty({-->
+<!--      before_label: 'Marigold',-->
+<!--      after_label: 'Ours',-->
+<!--      default_offset_pct: 0.35,-->
+<!--    });-->
+<!--  });-->
+<!--</script>-->
+
+<!--<section class="section">-->
+<!--  <div class="container is-max-desktop">-->
+<!--    &lt;!&ndash; Method. &ndash;&gt;-->
+<!--    <div class="columns is-centered has-text-centered">-->
+<!--      <div class="column is-four-fifths">-->
+<!--        <h2 class="title is-3">Methods</h2>-->
+<!--        <div class="content has-text-justified">-->
+
+<!--          <img id="method_train" width="100%" src="./images/pipeline-training.jpg" alt="DepthFM training scheme"/>-->
+
+<!--          <h3 class="title has-text-centered">-->
+<!--            Data dependent flow matching-->
+<!--          </h3>-->
+<!--          <p>-->
+<!--            DepthFM regresses a straight vector field between image distribution $x$ and depth distribution $d$ by leveraging the image-to-depth pairs. This approach facilitates efficient few-step inference without sacrificing performance.-->
+<!--          </p>-->
+
+<!--          <h3 class="title has-text-centered">-->
+<!--            Finetuning from diffusion prior-->
+<!--          </h3>-->
+<!--          <p>-->
+<!--            We demonstrate the successful transfer of the strong image prior from a foundation image synthesis diffusion model (Stable Diffusion v2-1) to a flow matching model with minimal reliance on training data and without the need for real-world images.-->
+<!--          </p>-->
+
+<!--          <h3 class="title has-text-centered">-->
+<!--            Auxiliary surface normal loss-->
+<!--          </h3>-->
+<!--          <p>-->
+<!--            Given that we only train on synthetic data and most synthetic datasets provide groundtruth surface normals, we incorporate surface normal loss as an auxiliary objective to enhance the accuracy of our depth estimates.-->
+<!--          </p>-->
+
+<!--          <h3 class="title has-text-centered">-->
+<!--            Comparison with other methods-->
+<!--          </h3>-->
+<!--          <p>-->
+<!--            Quantitative comparison of DepthFM with affine-invariant depth estimators on several zero-shot benchmarks. -->
+<!--            Bold numbers are the best, underscored second best. Our method outperforms other methods on both indoor and outdoor scenes in most cases with only little training on purely synthetic datasets.-->
+<!--          </p>-->
+
+<!--          <img id="comparison" width="100%" src="./images/sota-comparison.jpg" alt="Comparison with other methods"/>-->
+
+<!--          <p class="mt-5">-->
+<!--            Refer to the pdf paper linked above for more details on qualitative, quantitative, and ablation studies.-->
+<!--          </p>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--    &lt;!&ndash;/ Method. &ndash;&gt;-->
+<!--  </div>-->
+<!--</section>-->
+
+
+<section class="section pt-0" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">Citation</h2>
+    <pre class="selectable"><code>
+      Coming soon
+<!--      @misc{gui2024depthfm,-->
+<!--      title={DepthFM: Fast Monocular Depth Estimation with Flow Matching}, -->
+<!--      author={Ming Gui, Johannes S. Fischer, Ulrich Prestel, Pingchuan Ma, Dmytro Kotovenko, Olga Grebenkova, Stefan Andreas Baumann, Vincent Tao Hu, Björn Ommer},-->
+<!--      year={2024},-->
+<!--      eprint={2403.13788},-->
+<!--      archivePrefix={arXiv},-->
+<!--      primaryClass={cs.CV}-->
+<!--      }-->
+
+
+</code></pre>
+  </div>
+</section>
+
+
+<footer class="footer pt-4 pb-0">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            Website template based on
+            <a href="https://github.com/nerfies/nerfies.github.io">
+              Nerfies
+            </a> and 
+            <a href="https://marigoldmonodepth.github.io/">Marigold</a>.
+            and licensed under
+            <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
+              CC-BY-SA-4.0
+            </a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
