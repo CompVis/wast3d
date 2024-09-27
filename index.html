@@ -91,7 +91,7 @@
           <div class="column has-text-centered">
             <div class="publication-links">
               <span class="link-block">
-                <a href="https://arxiv.org/" target="_blank" rel="noopener noreferrer"
+                <a href="https://arxiv.org/abs/2409.17917" target="_blank" rel="noopener noreferrer"
                    class="external-link button is-normal is-rounded is-dark">
                   <span class="icon">
                       <i class="fas fa-file-pdf" style="color: orangered"></i>
@@ -160,7 +160,7 @@
             While style transfer techniques have been well-developed for 2D image stylization, the extension of these methods
             to 3D scenes remains relatively unexplored. Existing approaches demonstrate proficiency in transferring colors and
             textures but often struggle with replicating the geometry of the scenes. In our work, we leverage an explicit Gaussian
-            Scale (GS) representation and directly match the distributions of Gaussians between style and content scenes using the
+            Splatting (GS) representation and directly match the distributions of Gaussians between style and content scenes using the
             Earth Mover's Distance (EMD). By employing the entropy-regularized Wasserstein-2 distance, we ensure that the
             transformation maintains spatial smoothness. Additionally, we decompose the scene stylization problem into smaller
             chunks to enhance efficiency. This paradigm shift reframes stylization from a pure generative process driven by
@@ -915,7 +915,16 @@
   <div class="container is-max-desktop content">
     <h2 class="title">Citation</h2>
     <pre class="selectable"><code>
-      Coming soon
+      @misc{kotovenko2024wast3dwasserstein2distancescenetoscene,
+      title={WaSt-3D: Wasserstein-2 Distance for Scene-to-Scene Stylization on 3D Gaussians}, 
+      author={Dmytro Kotovenko and Olga Grebenkova and Nikolaos Sarafianos and Avinash Paliwal and Pingchuan Ma and Omid Poursaeed and Sreyas Mohan and Yuchen Fan and Yilei Li and Rakesh Ranjan and Björn Ommer},
+      year={2024},
+      eprint={2409.17917},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2409.17917}, 
+      }
+     
 <!--      @misc{gui2024depthfm,-->
 <!--      title={DepthFM: Fast Monocular Depth Estimation with Flow Matching}, -->
 <!--      author={Ming Gui, Johannes S. Fischer, Ulrich Prestel, Pingchuan Ma, Dmytro Kotovenko, Olga Grebenkova, Stefan Andreas Baumann, Vincent Tao Hu, Björn Ommer},-->
