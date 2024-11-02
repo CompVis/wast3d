@@ -915,7 +915,7 @@
   <div class="container is-max-desktop content">
     <h2 class="title">Citation</h2>
     <pre class="selectable"><code>
-      @misc{kotovenko2024wast3dwasserstein2distancescenetoscene,
+<!--       @misc{kotovenko2024wast3dwasserstein2distancescenetoscene,
       title={WaSt-3D: Wasserstein-2 Distance for Scene-to-Scene Stylization on 3D Gaussians}, 
       author={Dmytro Kotovenko and Olga Grebenkova and Nikolaos Sarafianos and Avinash Paliwal and Pingchuan Ma and Omid Poursaeed and Sreyas Mohan and Yuchen Fan and Yilei Li and Rakesh Ranjan and Björn Ommer},
       year={2024},
@@ -923,7 +923,37 @@
       archivePrefix={arXiv},
       primaryClass={cs.CV},
       url={https://arxiv.org/abs/2409.17917}, 
-      }
+      } -->
+      @InProceedings{10.1007/978-3-031-72664-4_17,
+author="Kotovenko, Dmytro
+and Grebenkova, Olga
+and Sarafianos, Nikolaos
+and Paliwal, Avinash
+and Ma, Pingchuan
+and Poursaeed, Omid
+and Mohan, Sreyas
+and Fan, Yuchen
+and Li, Yilei
+and Ranjan, Rakesh
+and Ommer, Bj{\"o}rn",
+editor="Leonardis, Ale{\v{s}}
+and Ricci, Elisa
+and Roth, Stefan
+and Russakovsky, Olga
+and Sattler, Torsten
+and Varol, G{\"u}l",
+title="WaSt-3D: Wasserstein-2 Distance for Scene-to-Scene Stylization on 3D Gaussians",
+booktitle="Computer Vision -- ECCV 2024",
+year="2025",
+publisher="Springer Nature Switzerland",
+address="Cham",
+pages="298--314",
+abstract="While style transfer techniques have been well-developed for 2D image stylization, the extension of these methods to 3D scenes remains relatively unexplored. Existing approaches demonstrate proficiency in transferring colors and textures but often struggle with replicating the geometry of the scenes. In our work, we leverage an explicit Gaussian Scale (GS) representation and directly match the distributions of Gaussians between style and content scenes using the Earth Mover's Distance (EMD). By employing the entropy-regularized Wasserstein-2 distance, we ensure that the transformation maintains spatial smoothness. Additionally, we decompose the scene stylization problem into smaller chunks to enhance efficiency. This paradigm shift reframes stylization from a pure generative process driven by latent space losses to an explicit matching of distributions between two Gaussian representations. Our method achieves high-resolution 3D stylization by faithfully transferring details from 3D style scenes onto the content scene. Furthermore, WaSt-3D consistently delivers results across diverse content and style scenes without necessitating any training, as it relies solely on optimization-based techniques. See our project page for additional results and source code: https://compvis.github.io/wast3d/.",
+isbn="978-3-031-72664-4",
+      url={https://arxiv.org/abs/2409.17917}, 
+}
+
+
 </code></pre>
   </div>
 </section>
